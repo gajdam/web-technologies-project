@@ -44,17 +44,15 @@ class Post
     }
 
     if ($flag) {
-        // Display buttons only for logged-in users
         if ($currentUser) {
             echo '<button onclick="printPost()">Wydruk</button>';
             echo '<button onclick="addComment()">Dodaj Komentarz</button>';
         }
     }
 
-    // Display buttons for the author (logged-in or guest)
     if ($currentUser && $currentUser == $this->author_id) {
-        echo '<button onclick="editPost(' . $this->id . ')">Edytuj</button>';
-        echo '<button onclick="deletePost(' . $this->id . ')">Usuń</button>';
+        echo '<a href="update_post_form.php?idp=' . $this->id . '"><button>Edytuj</button></a>';
+        echo '<a href="delete_post.php?idp=' . $this->id . '"><button>Usuń</button></a>';
     }
 
     echo '</div>';

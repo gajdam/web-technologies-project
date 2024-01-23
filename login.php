@@ -1,33 +1,50 @@
-<?php 
+<?php
+
 require_once('config.php');
 
-if(isset($_POST['username']) && isset($_POST['password'])) {
-    $login = $_POST['username'];
-    $form_password = $_POST['password'];
+class UserLogin {
+    private $conn;
 
-    $conn = new mysqli($serwer, $user, $password, $dbname);
-    $sql = "SELECT * FROM users WHERE username = '$login'";
-    $result = $conn->query($sql);
+    public function __construct() {
+        $this->conn = new mysqli($GLOBALS['serwer'], $GLOBALS['user'], $GLOBALS['password'], $GLOBALS['dbname']);
 
-    if ($result->num_rows > 0) {
-        $row = $result->fetch_assoc();
-        $stored_salt = $row['salt'];
-        $stored_password = $row['password'];
-
-        $hashed_password = password_hash($form_password,  PASSWORD_DEFAULT);
-        if (password_verify($form_password, $stored_password)) {
-            // if ($hashed_password == $stored_password) {
-            session_start();
-            $_SESSION['login'] = $_POST['username'];
-            header('Location: main_page.php');
-            exit;
-        } else {
-            echo 'Bledne dane logowania ale w logowaniu';
+        if ($this->conn->connect_error) {
+            die("Connection failed: " . $this->conn->connect_error);
         }
-    } else {
-        echo 'Bledne dane logowania';
     }
 
-    $conn->close();
+    public function loginUser($login, $formPassword) {
+        $sql = "SELECT * FROM users WHERE username = '$login'";
+        $result = $this->conn->query($sql);
+
+        if ($result->num_rows > 0) {
+            $row = $result->fetch_assoc();
+            $storedSalt = $row['salt'];
+            $storedPassword = $row['password'];
+
+            $hashedPassword = password_hash($formPassword, PASSWORD_DEFAULT);
+            if (password_verify($formPassword, $storedPassword)) {
+                session_start();
+                $_SESSION['login'] = $login;
+                header('Location: main_page.php');
+                exit;
+            } else {
+                echo 'Błędne dane logowania';
+            }
+        } else {
+            echo 'Błędne dane logowania';
+        }
+    }
 }
+
+// Użycie klasy
+$userLogin = new UserLogin();
+
+if (isset($_POST['username']) && isset($_POST['password'])) {
+    $login = $_POST['username'];
+    $formPassword = $_POST['password'];
+
+    $userLogin->loginUser($login, $formPassword);
+}
+
 ?>

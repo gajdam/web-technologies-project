@@ -26,7 +26,7 @@ class UserLogin {
             if (password_verify($formPassword, $storedPassword)) {
                 session_start();
                 $_SESSION['login'] = $row['id'];
-                header('Location: main_page.php');
+                header('Location: main_page.php?flag=true');
                 exit;
             } else {
                 echo 'Błędne dane logowania';

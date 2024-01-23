@@ -2,6 +2,7 @@
 <?php 
 require_once('config.php');
 session_start();
+
 if (isset($_SESSION['login'])) {
     include('navbar_logged_in.html');
 }
@@ -28,20 +29,38 @@ class Post
     public $author_name;
 
     public function displayPost()
-    {
-        echo '<div>';
-        echo '<h2>' . $this->title . '</h2>';
-        echo '<p>' . $this->content . '</p>';
-        echo '<p>Author: ' . $this->author_name . '</p>';
-        echo '<p>Localization: ' . $this->localization . '</p>';
+{
+    $currentUser = isset($_SESSION['login']) ? $_SESSION['login'] : null;
+    $flag = isset($_GET['flag']) ? $_GET['flag'] : null;
 
-        // Jeśli istnieje ścieżka do zdjęcia, wyświetl je
-        if ($this->photo) {
-            echo '<img src="' . $this->photo . '" alt="Post Photo">';
-        }
+    echo '<div>';
+    echo '<h2>' . $this->title . '</h2>';
+    echo '<p>' . $this->content . '</p>';
+    echo '<p>Author: ' . $this->author_name . '</p>';
+    echo '<p>Localization: ' . $this->localization . '</p>';
 
-        echo '</div>';
+    if ($this->photo) {
+        echo '<img src="' . $this->photo . '" alt="Post Photo">';
     }
+
+    if ($flag) {
+        // Display buttons only for logged-in users
+        if ($currentUser) {
+            echo '<button onclick="printPost()">Wydruk</button>';
+            echo '<button onclick="addComment()">Dodaj Komentarz</button>';
+        }
+    }
+
+    // Display buttons for the author (logged-in or guest)
+    if ($currentUser && $currentUser == $this->author_id) {
+        echo '<button onclick="editPost(' . $this->id . ')">Edytuj</button>';
+        echo '<button onclick="deletePost(' . $this->id . ')">Usuń</button>';
+    }
+
+    echo '</div>';
+}
+
+
 }
 
 class PostManager
@@ -57,7 +76,6 @@ class PostManager
     {
         $posts = [];
 
-        // Zapytanie SQL do pobrania postów z dołączeniem informacji o autorze
         $sql = "SELECT posts.id, posts.title, posts.content, posts.photo, posts.author_id, posts.localization, users.username 
                 FROM posts
                 JOIN users ON posts.author_id = users.id";

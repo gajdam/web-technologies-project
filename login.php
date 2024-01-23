@@ -25,7 +25,7 @@ class UserLogin {
             $hashedPassword = password_hash($formPassword, PASSWORD_DEFAULT);
             if (password_verify($formPassword, $storedPassword)) {
                 session_start();
-                $_SESSION['login'] = $login;
+                $_SESSION['login'] = $row['id'];
                 header('Location: main_page.php');
                 exit;
             } else {

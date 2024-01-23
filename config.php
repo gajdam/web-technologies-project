@@ -3,6 +3,6 @@
 $serwer = 'localhost';
 $user = 'root';
 $password = '';
-$dbname = 'WTP_gajda';
+$dbname = 'wtp_gajda';
 
 ?>

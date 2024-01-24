@@ -2,10 +2,12 @@
 <html>
 <head>
     <title>Signup Form</title>
+    <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body>
-    <h2>Signup Form</h2>
-    <form action="signup.php" method="POST">
+    <div class="login-container">
+    <h2>Join us</h2>
+    <form class="login-form" action="signup.php" method="POST">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required><br><br>
         
@@ -14,8 +16,9 @@
         
         <label for="password">Confirm password:</label>
         <input type="password" id="password" name="confirm_password" required><br><br>
-        <input type="submit" value="Signup">
+        <button type="submit">Sign up</button>
+    <a href="login.html" class="signup-link">Already have an anccount? Log in</a>
     </form>
-    <p>Already have an account? <a href="login.html">Log in</a></p>
+    </div>  
 </body>
 </html>

@@ -33,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':localization', $localization);
         $stmt->execute();
 
-        header('Location: main_page.php');
+        header('Location: main_page.php?flag=true');
         exit();
     } catch (PDOException $e) {
         echo 'Błąd: ' . $e->getMessage();

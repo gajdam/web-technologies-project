@@ -8,4 +8,4 @@ $prep->bind_param('ssss', $_POST['title'], $_POST['content'], $_POST['photo'], $
 $prep->execute();
 
 ?>
-<a href="main_page.php"><button>Wróć</button></a>
+<a href="main_page.php?flag=true"><button>Wróć</button></a>

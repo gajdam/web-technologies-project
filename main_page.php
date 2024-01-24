@@ -39,14 +39,14 @@ class Post
 
         if ($flag) {
             if ($currentUser || $isAdmin) {
-                echo '<a href="print_post.php?idp=' . $this->id . '"><button class="btn">print</button></a>';
-                echo '<a href="add_comment.php?idp=' . $this->id . '"><button class="btn">add comment</button></a>';
+                echo '<a href="print_post.php?idp=' . $this->id . '&flag=true"><button class="btn">print</button></a>';
+                echo '<a href="add_comment.php?idp=' . $this->id . '&flag=true"><button class="btn">add comment</button></a>';
             }
         }
 
         if ($currentUser && $currentUser == $this->author_id || $isAdmin) {
-            echo '<a href="update_post_form.php?idp=' . $this->id . '"><button class="btn">edit</button></a>';
-            echo '<a href="delete_post.php?idp=' . $this->id . '"><button class="btn">delete</button></a>';
+            echo '<a href="update_post_form.php?idp=' . $this->id . '&flag=true"><button class="btn">edit</button></a>';
+            echo '<a href="delete_post.php?idp=' . $this->id . '&flag=true"><button class="btn">delete</button></a>';
         }
 
         echo '</div>';

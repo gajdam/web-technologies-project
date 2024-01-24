@@ -20,6 +20,7 @@ echo '</form>';
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = $_POST['content'];
     $post_id = $_POST['idp'];
+
     try {
         $db = new PDO('mysql:host='.$serwer.';dbname='.$dbname, $user, $password);
         $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -32,7 +33,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $stmt->bindParam(':post_id', $post_id);
         $stmt->execute();
 
-        header('Location: main_page.php');
+        header('Location: main_page.php?flag=true');
         exit();
     } catch (PDOException $e) {
         echo 'Błąd: ' . $e->getMessage();

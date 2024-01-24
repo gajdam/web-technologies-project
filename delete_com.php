@@ -18,4 +18,4 @@ if ($stmt->execute() === TRUE) {
 }
 $stmt->close();
 ?>
-<a href="main_page.php"><button>Wróć</button></a>
+<a href="main_page.php?flag=true"><button>Wróć</button></a>

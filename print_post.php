@@ -19,4 +19,4 @@ echo $data;
 
 ?>
 
-<a href="main_page.php"><button>Wróć</button></a>
+<a href="main_page.php?flag=true"><button>Wróć</button></a>

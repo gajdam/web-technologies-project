@@ -1,3 +1,4 @@
+<link rel="stylesheet" type="text/css" href="style2.css">
 
 <?php 
 require_once('config.php');
@@ -6,18 +7,9 @@ session_start();
 
 if (isset($_SESSION['login'])) {
     include('navbar_logged_in.html');
-}
-else {
+} else {
     include('navbar.html');
 }
-
-// if (session_status() == PHP_SESSION_NONE) {
-//     include('navbar.html'); 
-// }
-// else {
-//     include('navbar_logged_in.html');
-// }
-// session_destroy();
 
 class Post
 {
@@ -30,36 +22,34 @@ class Post
     public $author_name;
 
     public function displayPost()
-{
-    $currentUser = isset($_SESSION['login']) ? $_SESSION['login'] : null;
-    $flag = isset($_GET['flag']) ? $_GET['flag'] : null;
+    {
+        $currentUser = isset($_SESSION['login']) ? $_SESSION['login'] : null;
+        $flag = isset($_GET['flag']) ? $_GET['flag'] : null;
 
-    echo '<div>';
-    echo '<h2>' . $this->title . '</h2>';
-    echo '<p>' . $this->content . '</p>';
-    echo '<p>Author: ' . $this->author_name . '</p>';
-    echo '<p>Localization: ' . $this->localization . '</p>';
+        echo '<div class="post-container">';
+        echo '<h2 class="post-title">' . $this->title . '</h2>';
+        echo '<p class="post-content">' . $this->content . '</p>';
+        echo '<p class="post-author">Author: ' . $this->author_name . '</p>';
+        echo '<p class="post-localization">Localization: ' . $this->localization . '</p>';
 
-    if ($this->photo) {
-        echo '<img src="' . $this->photo . '" alt="Post Photo">';
-    }
-
-    if ($flag) {
-        if ($currentUser) {
-            echo '<a href="print_post.php?idp=' . $this->id . '"><button>Wydrukuj</button></a>';
-            echo '<button onclick="addComment()">Dodaj Komentarz</button>';
+        if ($this->photo) {
+            echo '<img class="post-photo" src="' . $this->photo . '" alt="Post Photo">';
         }
+
+        if ($flag) {
+            if ($currentUser) {
+                echo '<a href="print_post.php?idp=' . $this->id . '"><button class="btn">Wydrukuj</button></a>';
+                echo '<button class="btn" onclick="addComment()">Dodaj Komentarz</button>';
+            }
+        }
+
+        if ($currentUser && $currentUser == $this->author_id) {
+            echo '<a href="update_post_form.php?idp=' . $this->id . '"><button class="btn">Edytuj</button></a>';
+            echo '<a href="delete_post.php?idp=' . $this->id . '"><button class="btn">Usuń</button></a>';
+        }
+
+        echo '</div>';
     }
-
-    if ($currentUser && $currentUser == $this->author_id) {
-        echo '<a href="update_post_form.php?idp=' . $this->id . '"><button>Edytuj</button></a>';
-        echo '<a href="delete_post.php?idp=' . $this->id . '"><button>Usuń</button></a>';
-    }
-
-    echo '</div>';
-}
-
-
 }
 
 class PostManager
@@ -111,29 +101,28 @@ $commentManager = new CommentManager($db);
 $posts = $postManager->getPosts();
 
 if (!empty($posts)) {
+    foreach ($posts as $post) {
+        $post->displayPost();
+        $comments = $commentManager->getCommentsByPostId($post->id);
+        if (!empty($comments)) {
+            echo '<div class="comments-container">';
+            echo '<h3 class="comments-heading">Komentarze:</h3>';
+            foreach ($comments as $comment) {
+                echo '<p class="comment"><strong>' . $comment->authorName . ':</strong> ' . $comment->content;
 
-foreach ($posts as $post) {
-    $post->displayPost();
-    // Wyświetlanie komentarzy dla każdego posta
-    $comments = $commentManager->getCommentsByPostId($post->id);
-    if (!empty($comments)) {
-        echo '<h3>Komentarze:</h3>';
-        foreach ($comments as $comment) {
-            echo '<p><strong>' . $comment->authorName . ':</strong> ' . $comment->content;
+                if (isset($_SESSION['login']) && ($_SESSION['login'] == $comment->author_id || $_SESSION['login'] == $post->author_id)) {
+                    echo ' <a class="delete-link" href="delete_com.php?idc=' . $comment->id . '">Usuń</a>';
+                }
 
-            // Dodaj link do delete_com.php tylko dla autora posta lub autora komentarza
-            if ($_SESSION['login'] == $comment->author_id || $_SESSION['login'] == $post->author_id) {
-                echo ' <a href="delete_com.php?idc=' . $comment->id . '">Usuń</a>';
+                echo '</p>';
             }
-
-            echo '</p>';
-        } 
-    }else {
-        echo '<p>Brak komentarzy.</p>';
-}
-} 
-}else {
-    echo 'Brak dostępnych postów.';
+            echo '</div>';
+        } else {
+            echo '<p class="no-comments">Brak komentarzy.</p>';
+        }
+    }
+} else {
+    echo '<p class="no-posts">Brak dostępnych postów.</p>';
 }
 
 $db = null;

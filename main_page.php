@@ -1,6 +1,7 @@
 
 <?php 
 require_once('config.php');
+require_once('comments.php');
 session_start();
 
 if (isset($_SESSION['login'])) {
@@ -45,7 +46,7 @@ class Post
 
     if ($flag) {
         if ($currentUser) {
-            echo '<button onclick="printPost()">Wydruk</button>';
+            echo '<a href="print_post.php?idp=' . $this->id . '"><button>Wydrukuj</button></a>';
             echo '<button onclick="addComment()">Dodaj Komentarz</button>';
         }
     }
@@ -105,14 +106,33 @@ try {
 }
 
 $postManager = new PostManager($db);
+$commentManager = new CommentManager($db);
 
 $posts = $postManager->getPosts();
 
 if (!empty($posts)) {
-    foreach ($posts as $post) {
-        $post->displayPost();
-    }
-} else {
+
+foreach ($posts as $post) {
+    $post->displayPost();
+    // Wyświetlanie komentarzy dla każdego posta
+    $comments = $commentManager->getCommentsByPostId($post->id);
+    if (!empty($comments)) {
+        echo '<h3>Komentarze:</h3>';
+        foreach ($comments as $comment) {
+            echo '<p><strong>' . $comment->authorName . ':</strong> ' . $comment->content;
+
+            // Dodaj link do delete_com.php tylko dla autora posta lub autora komentarza
+            if ($_SESSION['login'] == $comment->author_id || $_SESSION['login'] == $post->author_id) {
+                echo ' <a href="delete_com.php?idc=' . $comment->id . '">Usuń</a>';
+            }
+
+            echo '</p>';
+        } 
+    }else {
+        echo '<p>Brak komentarzy.</p>';
+}
+} 
+}else {
     echo 'Brak dostępnych postów.';
 }
 

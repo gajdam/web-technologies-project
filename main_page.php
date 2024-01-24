@@ -24,6 +24,7 @@ class Post
     public function displayPost()
     {
         $currentUser = isset($_SESSION['login']) ? $_SESSION['login'] : null;
+        $isAdmin = isset($_SESSION['is_admin']) ? $_SESSION['is_admin'] : 0;
         $flag = isset($_GET['flag']) ? $_GET['flag'] : null;
 
         echo '<div class="post-container">';
@@ -37,13 +38,13 @@ class Post
         }
 
         if ($flag) {
-            if ($currentUser) {
+            if ($currentUser || $isAdmin) {
                 echo '<a href="print_post.php?idp=' . $this->id . '"><button class="btn">print</button></a>';
                 echo '<a href="add_comment.php?idp=' . $this->id . '"><button class="btn">add comment</button></a>';
             }
         }
 
-        if ($currentUser && $currentUser == $this->author_id) {
+        if ($currentUser && $currentUser == $this->author_id || $isAdmin) {
             echo '<a href="update_post_form.php?idp=' . $this->id . '"><button class="btn">edit</button></a>';
             echo '<a href="delete_post.php?idp=' . $this->id . '"><button class="btn">delete</button></a>';
         }

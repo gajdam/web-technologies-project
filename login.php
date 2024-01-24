@@ -26,6 +26,7 @@ class UserLogin {
             if (password_verify($formPassword, $storedPassword)) {
                 session_start();
                 $_SESSION['login'] = $row['id'];
+                $_SESSION['is_admin'] = $row['is_admin'];
                 header('Location: main_page.php?flag=true');
                 exit;
             } else {
